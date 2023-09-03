@@ -1,5 +1,7 @@
 import sqlite3
+
 from tkinter import *
+from tkinter import messagebox
 
 base_datos = sqlite3.connect('almacen.bd')
 cursor = base_datos.cursor()
@@ -57,31 +59,33 @@ base_datos.close()
 
 def agregar_producto(ventana):
     ventana_emergente = Toplevel(ventana)
+    ventana_emergente.resizable(width=False, height=False)
+
     ventana_emergente.title('Agregar Producto')
 
-    titulo = Label(ventana_emergente, text='Agregar Producto')
-    titulo.grid(row=0, column=0)
+    titulo = Label(ventana_emergente, text='Agregar Producto', font=60)
+    titulo.grid(row=0, columnspan=2, padx=10, pady=10)
 
-    titulo_producto = Label(ventana_emergente, text='Nombre Producto')
-    titulo_producto.grid(row=1, column=0)
+    titulo_producto = Label(ventana_emergente, text='Nombre Producto', font=45)
+    titulo_producto.grid(row=1, column=0, padx=5, pady=5)
 
-    nombre_producto = Entry(ventana_emergente)
-    nombre_producto.grid(row=1, column=1)
+    nombre_producto = Entry(ventana_emergente, font=45)
+    nombre_producto.grid(row=1, column=1, padx=5, pady=5)
 
-    titulo_precio = Label(ventana_emergente, text='Precio')
-    titulo_precio.grid(row=2, column=0)
+    titulo_precio = Label(ventana_emergente, text='Precio', font=45)
+    titulo_precio.grid(row=2, column=0, padx=5, pady=5)
 
-    precio_producto = Entry(ventana_emergente)
-    precio_producto.grid(row=2, column=1)
+    precio_producto = Entry(ventana_emergente, font=45)
+    precio_producto.grid(row=2, column=1, padx=5, pady=5)
 
-    titulo_stock = Label(ventana_emergente, text='Stock')
-    titulo_stock.grid(row=3, column=0)
+    titulo_stock = Label(ventana_emergente, text='Stock', font=45)
+    titulo_stock.grid(row=3, column=0, padx=5, pady=5)
 
-    stock_producto = Entry(ventana_emergente)
-    stock_producto.grid(row=3, column=1)
+    stock_producto = Entry(ventana_emergente, font=45)
+    stock_producto.grid(row=3, column=1, padx=5, pady=5)
 
-    titulo_marca = Label(ventana_emergente, text='Marca')
-    titulo_marca.grid(row=4, column=0)
+    titulo_marca = Label(ventana_emergente, text='Marca', font=45)
+    titulo_marca.grid(row=4, column=0, padx=5, pady=5)
 
     marcas_opciones = ['Seleccionar Marca', 'Arcor', 'Marolio', 'Serenisima', 'Knor', 'Natura']
 
@@ -89,10 +93,10 @@ def agregar_producto(ventana):
     marca_seleccionada.set(marcas_opciones[0])
 
     marca_producto = OptionMenu(ventana_emergente, marca_seleccionada, *marcas_opciones)
-    marca_producto.grid(row=4, column=1)
+    marca_producto.grid(row=4, column=1, padx=5, pady=5)
 
-    titulo_categoria = Label(ventana_emergente, text='Categoria')
-    titulo_categoria.grid(row=5, column=0)
+    titulo_categoria = Label(ventana_emergente, text='Categoria', font=45)
+    titulo_categoria.grid(row=5, column=0, padx=5, pady=5)
 
     categorias_opciones = ['Seleccionar Categoria', 'Almacen', 'Bebidas', 'Lacteos', 'Golosinas', 'Aceites', 'Otros']
 
@@ -100,7 +104,7 @@ def agregar_producto(ventana):
     categoria_seleccionada.set(categorias_opciones[0])
 
     categoria_producto = OptionMenu(ventana_emergente, categoria_seleccionada, *categorias_opciones)
-    categoria_producto.grid(row=5, column=1)
+    categoria_producto.grid(row=5, column=1, padx=5, pady=5)
 
     base_datos = sqlite3.connect('almacen.bd')
     cursor = base_datos.cursor()
@@ -138,55 +142,171 @@ def agregar_producto(ventana):
 
         # Guarda los cambios en la base de datos
         base_datos.commit()
+        messagebox.showinfo('Completado','El producto ha sido guardado con éxito.')
+
     boton_guardar = Button(ventana_emergente, text='Guardar Producto', command=insertar_producto)
-    boton_guardar.grid(row=6, columnspan=2)
+    boton_guardar.grid(row=6, columnspan=2, padx=5, pady=5)
 
 
 def buscar_producto(ventana):
     ventana_emergente = Toplevel(ventana)
+    ventana_emergente.resizable(width=False, height=False)
     ventana_emergente.title('Buscar Producto')
     
-    titulo = Label(ventana_emergente, text='Buscar Producto')
-    titulo.grid(row=0, column=0)
+    titulo = Label(ventana_emergente, text='Buscar Producto', font=65)
+    titulo.grid(row=0, columnspan=7, padx=10, pady=10)
 
     criterio_busqueda = StringVar()
     criterio_busqueda.set('Nombre')
     opciones_busqueda = ["Nombre", "Marca", "Categoría"]
 
     opcion_busqueda = OptionMenu(ventana_emergente, criterio_busqueda, *opciones_busqueda)
-    opcion_busqueda.grid(row=1, column=0)
+    opcion_busqueda.grid(row=1, column=0, padx=5, pady=5)
 
-    busqueda_entry = Entry(ventana_emergente)
-    busqueda_entry.grid(row=1, column=1)
+    busqueda_entry = Entry(ventana_emergente, font=45)
+    busqueda_entry.grid(row=1, column=1, padx=5, pady=5)
 
     def producto_buscar():
+
     # Obtén el criterio de búsqueda y el valor de entrada de búsqueda
         criterio = criterio_busqueda.get()
         valor_busqueda = busqueda_entry.get()
         base_datos = sqlite3.connect('almacen.bd')
         cursor = base_datos.cursor()
     # Realiza la búsqueda según el criterio seleccionado
+        
         if criterio == "Nombre":
             cursor.execute("SELECT * FROM producto WHERE nombre LIKE ?", ('%' + valor_busqueda + '%',))
         elif criterio == "Marca":
             cursor.execute("SELECT * FROM producto WHERE marca_id IN (SELECT marca_id FROM marca WHERE nombre LIKE ?)", ('%' + valor_busqueda + '%',))
         elif criterio == "Categoría":
             cursor.execute("SELECT * FROM producto WHERE categoria_id IN (SELECT categoria_id FROM categoria WHERE nombre LIKE ?)", ('%' + valor_busqueda + '%',))
+        
+        productos = cursor.fetchall()
 
-        resultados = cursor.fetchall()
+        if not productos:
 
-        # Muestra los resultados (esto depende de cómo quieras mostrarlos en tu interfaz)
-        for resultado in resultados:
-            print(resultado)
+            messagebox.showerror('Error', f'{productos} No Encontrado' )
 
-    # Cierra la conexión a la base de datos cuando hayas terminado
+        else:
+            # Muestra los resultados 
+            fila = 1
+            for resultado in productos:
+                id, nombre, precio, stock, marca_id, categoria_id = resultado
+
+                resultado_nombre = Label(ventana_emergente, text=f'{nombre}', font=45)
+                resultado_nombre.grid(row=fila, column=2)
+
+                resultado_precio = Label(ventana_emergente, text=f'{precio}', font=45)
+                resultado_precio.grid(row=fila, column=3)
+
+                resultado_stock = Label(ventana_emergente, text=f'{stock}', font=45)
+                resultado_stock.grid(row=fila, column=4)
+
+                resultado_marca = Label(ventana_emergente, text=f'{marca_id}', font=45)
+                resultado_marca.grid(row=fila, column=5)
+
+                resultado_categoria = Label(ventana_emergente, text=f'{categoria_id}', font=45)
+                resultado_categoria.grid(row=fila, column=6)
+
+                boton_editar = Button(ventana_emergente, text='Editar Producto', command=lambda:mostrar_formulario_edicion(resultado), font=45)
+                boton_editar.grid(row=fila, column=7, padx=5, pady=5)
+
+                boton_eliminar = Button(ventana_emergente, text='Eliminar Producto', command=lambda:eliminar_productos(id), font=45)
+                boton_eliminar.grid(row=fila, column=8, padx=5, pady=5)
+
+                fila += 1
+
+        # Cierra la conexión a la base de datos cuando hayas terminado
         base_datos.close()
 
-    boton_buscar = Button(ventana_emergente, text='Buscar Producto', command=producto_buscar)
-    boton_buscar.grid(row=2, columnspan=2)
+    boton_buscar = Button(ventana_emergente, text='Buscar Producto', command=producto_buscar, font=45)
+    boton_buscar.grid(row=2, columnspan=2, padx=5, pady=5)
+
+def eliminar_productos(id):
+    base_datos =sqlite3.connect('almacen.bd')
+    cursor = base_datos.cursor()
+
+    cursor.execute("DELETE FROM producto WHERE producto_id=?", (id,))
+
+    base_datos.commit()
+
+    base_datos.close()
+
+    messagebox.showinfo('Completado','El producto ha sido eliminado con éxito.')
 
 
+def mostrar_formulario_edicion(producto):
 
-def eliminar_producto(ventana):
-    ventana_emergente = Toplevel(ventana)
-    ventana_emergente.title('Eliminar Producto')
+    ventana_emergente = Toplevel()
+
+    ventana_emergente.resizable(width=False, height=False)
+
+    ventana_emergente.title('Editar Producto')
+
+    titulo = Label(ventana_emergente, text='Editar Producto', font=65)
+    titulo.grid(row=0, columnspan=2, padx=10, pady=10)
+
+    titulo_producto = Label(ventana_emergente, text='Nombre Producto', font=45)
+    titulo_producto.grid(row=1, column=0, padx=5, pady=5)
+
+    nombre_producto = Entry(ventana_emergente, font=45)
+    nombre_producto.grid(row=1, column=1)
+    nombre_producto.insert(0, producto[1])  # Llena el campo con el nombre del producto
+
+    titulo_precio = Label(ventana_emergente, text='Precio', font=45)
+    titulo_precio.grid(row=2, column=0, padx=5, pady=5)
+
+    precio_producto = Entry(ventana_emergente, font=45)
+    precio_producto.grid(row=2, column=1)
+    precio_producto.insert(0, producto[2])  # Llena el campo con el precio del producto
+
+    titulo_stock = Label(ventana_emergente, text='Stock', font=45)
+    titulo_stock.grid(row=3, column=0, padx=5, pady=5)
+
+    stock_producto = Entry(ventana_emergente, font=45)
+    stock_producto.grid(row=3, column=1)
+    stock_producto.insert(0, producto[3])  # Llena el campo con el stock del producto
+
+    titulo_marca = Label(ventana_emergente, text='Marca', font=45)
+    titulo_marca.grid(row=4, column=0)
+
+    marcas_opciones = ['Seleccionar Marca', 'Arcor', 'Marolio', 'Serenisima', 'Knor', 'Natura']
+
+    marca_seleccionada = StringVar()
+    marca_seleccionada.set(producto[4])  # Llena el campo con la marca del producto (suponiendo que sea una de las opciones)
+
+    marca_producto = OptionMenu(ventana_emergente, marca_seleccionada, *marcas_opciones)
+    marca_producto.grid(row=4, column=1)
+
+    titulo_categoria = Label(ventana_emergente, text='Categoria', font=45)
+    titulo_categoria.grid(row=5, column=0)
+
+    categorias_opciones = ['Seleccionar Categoria', 'Almacen', 'Bebidas', 'Lacteos', 'Golosinas', 'Aceites', 'Otros']
+
+    categoria_seleccionada = StringVar()
+    categoria_seleccionada.set(producto[5])  # Llena el campo con la categoría del producto (suponiendo que sea una de las opciones)
+
+    categoria_producto = OptionMenu(ventana_emergente, categoria_seleccionada, *categorias_opciones)
+    categoria_producto.grid(row=5, column=1)
+
+    # Función para guardar los cambios en la base de datos
+    def guardar_cambios():
+        nombre = nombre_producto.get()
+        precio = precio_producto.get()
+        stock = stock_producto.get()
+        marca = marca_seleccionada.get()
+        categoria = categoria_seleccionada.get()
+        
+        # Actualiza los datos del producto en la base de datos
+        base_datos = sqlite3.connect('almacen.bd')
+        cursor = base_datos.cursor()
+        cursor.execute("UPDATE producto SET nombre=?, precio=?, stock=?, marca_id=?, categoria_id=? WHERE producto_id=?", (nombre, precio, stock, marca, categoria, producto[0]))
+        base_datos.commit()
+        base_datos.close()
+        
+        # Cierra la ventana emergente después de guardar los cambios
+        ventana_emergente.destroy()
+
+    boton_guardar = Button(ventana_emergente, text='Guardar Cambios', command=guardar_cambios, font=45)
+    boton_guardar.grid(row=6, columnspan=2, padx=5, pady=5)

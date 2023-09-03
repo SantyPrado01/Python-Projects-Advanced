@@ -2,20 +2,16 @@ from tkinter import *
 from funciones import *
 
 ventana = Tk()
-
+ventana.resizable(width=False, height=False)
 ventana.title('Almacen')
 
-tiutlo = Label(ventana, text='Gestion de Stock', font=32)
-tiutlo.grid(row=0, columnspan=3)
+tiutlo = Label(ventana, text='Gestion de Stock', font=60)
+tiutlo.grid(row=0, columnspan=3, padx=10, pady=10)
 
-boton_agregar = Button(ventana, text='Agregar Productos', command=lambda:agregar_producto(ventana))
-boton_agregar.grid(row=1, column=0)
+boton_agregar = Button(ventana, text='Agregar Productos', command=lambda:agregar_producto(ventana), font=45)
+boton_agregar.grid(row=1, column=0, padx=10, pady=10)
 
-boton_buscar = Button(ventana, text='Buscar Producto', command=lambda:buscar_producto(ventana))
-boton_buscar.grid(row=1, column=1)
-
-boton_eliminar = Button(ventana, text='Eliminar Producto', command=lambda:eliminar_producto(ventana))
-boton_eliminar.grid(row=1, column=2)
-
+boton_buscar = Button(ventana, text='Buscar Producto', command=lambda:buscar_producto(ventana), font=45)
+boton_buscar.grid(row=1, column=1, padx=10, pady=10)
 
 ventana.mainloop()
