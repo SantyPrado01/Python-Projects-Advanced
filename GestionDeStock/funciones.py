@@ -2,6 +2,8 @@ import sqlite3
 
 from tkinter import *
 from tkinter import messagebox
+from tkinter import ttk
+import tkinter as tk
 
 base_datos = sqlite3.connect('almacen.bd')
 cursor = base_datos.cursor()
@@ -149,6 +151,7 @@ def agregar_producto(ventana):
 
 
 def buscar_producto(ventana):
+
     ventana_emergente = Toplevel(ventana)
     ventana_emergente.resizable(width=False, height=False)
     ventana_emergente.title('Buscar Producto')
@@ -193,6 +196,23 @@ def buscar_producto(ventana):
 
             fila = 1
             for resultado in productos:
+
+                tree.insert('','end', values=resultado)
+
+              
+
+                tree = ttk.Treeview(ventana_emergente, columns=("Nombre", "Precio", "Marca", "Categoria"))
+                tree.heading("#1", text="Nombre", anchor=tk.CENTER)  # Centrar el encabezado 'Nombre'
+                tree.heading("#2", text="Precio", anchor=tk.CENTER)  # Centrar el encabezado 'Precio'
+                tree.heading("#3", text="Marca", anchor=tk.CENTER)   # Centrar el encabezado 'Marca'
+                tree.heading("#4", text="Categoria", anchor=tk.CENTER)  # Centrar el encabezado 'Categoria'
+                tree.column("#0", width=0, stretch=tk.NO)  # Ocultar la columna #0 que habitualmente muestra las primary key de los objetos
+                tree.pack(padx=10, pady=10)
+
+
+
+
+
                 id, nombre, precio, stock, marca_id, categoria_id = resultado
 
                 cursor.execute("SELECT nombre FROM marca WHERE marca_id=?", (marca_id,))
