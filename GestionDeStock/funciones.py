@@ -142,7 +142,6 @@ def agregar_producto(ventana):
         cursor.execute("INSERT INTO producto (nombre, precio, stock, marca_id, categoria_id) VALUES (?, ?, ?, ?, ?)",
                    (nombre, precio, stock, marca_id[0], categoria_id[0]))
 
-        
         base_datos.commit()
         messagebox.showinfo('Completado','El producto ha sido guardado con éxito.')
 
@@ -207,6 +206,7 @@ def buscar_producto(ventana):
             
             for resultado in productos:
                 id, nombre, precio, stock, marca_id, categoria_id = resultado
+
                 cursor.execute("SELECT nombre FROM marca WHERE marca_id=?", (marca_id,))
                 marca_nombre = cursor.fetchone()[0]
 
@@ -228,6 +228,9 @@ def buscar_producto(ventana):
 
     boton_buscar = Button(ventana_emergente, text='Buscar Producto', command=producto_buscar, font=45)
     boton_buscar.grid(row=2, columnspan=2, padx=5, pady=5)
+
+
+
 
 def eliminar_productos():
 
