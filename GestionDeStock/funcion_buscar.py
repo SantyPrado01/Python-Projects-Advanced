@@ -54,10 +54,7 @@ def buscar_producto(ventana):
         else:
             # Muestra los resultados 
             global tree
-            ventana_emergente_2 = Toplevel()
-            ventana_emergente_2.resizable(height=False, width=False)
-
-            tree = ttk.Treeview(ventana_emergente_2, columns=('ID',"Nombre", "Precio", "Stock","Marca", "Categoria"))
+            tree = ttk.Treeview(ventana_emergente, columns=('ID',"Nombre", "Precio", "Stock","Marca", "Categoria"))
             
             tree.column("#0", width=0, stretch=tk.NO)
             tree.heading("#1", text='Identificador',anchor=tk.CENTER) 
@@ -81,13 +78,13 @@ def buscar_producto(ventana):
 
                 tree.insert('','end', values=[id, nombre, precio, stock,marca_nombre, categoria_nombre])
                 
-            tree.grid(row=0, column=0, padx=10, pady=10)
+            tree.grid(row=3, column=0, padx=10, pady=10)
 
-            boton_editar = Button(ventana_emergente_2, text='Editar Producto', command=lambda:mostrar_formulario_edicion(tree), font=45)
-            boton_editar.grid(row=1, column=0, padx=5, pady=5)
+            boton_editar = Button(ventana_emergente, text='Editar Producto', command=lambda:mostrar_formulario_edicion(tree), font=45)
+            boton_editar.grid(row=4, column=0, padx=5, pady=5)
 
-            boton_eliminar = Button(ventana_emergente_2, text='Eliminar Producto', command=lambda:eliminar_productos(tree), font=45)
-            boton_eliminar.grid(row=2, column=0, padx=5, pady=5)
+            boton_eliminar = Button(ventana_emergente, text='Eliminar Producto', command=lambda:eliminar_productos(tree), font=45)
+            boton_eliminar.grid(row=5, column=0, padx=5, pady=5)
 
         base_datos.close()
 

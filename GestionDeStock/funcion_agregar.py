@@ -7,12 +7,10 @@ from funcion_editar import *
 
 base_datos = sqlite3.connect('almacen.bd')
 
-global cursor
-
 cursor = base_datos.cursor()
 
 def agregar_producto(ventana):
-    global ventana_emergente
+    global ventana_emergente, marcas_opciones
 
     ventana_emergente= Toplevel(ventana)
     ventana_emergente.resizable(width=False, height=False)
@@ -43,13 +41,16 @@ def agregar_producto(ventana):
     titulo_marca = Label(ventana_emergente, text='Marca', font=45)
     titulo_marca.grid(row=4, column=0, padx=5, pady=5)
 
-    marcas_opciones = ['Seleccionar Marca', 'Arcor', 'Marolio', 'Serenisima', 'Knor', 'Natura']
-
+    marcas_opciones = obtener_marcas_existentes()
+  
     marca_seleccionada = StringVar()
     marca_seleccionada.set(marcas_opciones[0])
 
     marca_producto = OptionMenu(ventana_emergente, marca_seleccionada, *marcas_opciones)
     marca_producto.grid(row=4, column=1, padx=5, pady=5)
+
+    agregar_marca = Button(ventana_emergente, text='+', font=45, command=lambda:crear_marca(ventana_emergente))
+    agregar_marca.grid(row=4, column=3, padx=5, pady=5)
 
     titulo_categoria = Label(ventana_emergente, text='Categoria', font=45)
     titulo_categoria.grid(row=5, column=0, padx=5, pady=5)
@@ -60,7 +61,7 @@ def agregar_producto(ventana):
     categoria_seleccionada.set(categorias_opciones[0])
 
     categoria_producto = OptionMenu(ventana_emergente, categoria_seleccionada, *categorias_opciones)
-    categoria_producto.grid(row=5, column=1, padx=5, pady=5)
+    categoria_producto.grid(row=5, column=1, padx=5, pady=5) 
 
     def insertar_marca(marca):
 
@@ -73,7 +74,7 @@ def agregar_producto(ventana):
         base_datos.commit()
 
     def insertar_producto():
- 
+        
         nombre = nombre_producto.get()
         precio = precio_producto.get()
         stock = stock_producto.get()
@@ -90,11 +91,12 @@ def agregar_producto(ventana):
         categoria_id = cursor.fetchone()
     
         cursor.execute("INSERT INTO producto (nombre, precio, stock, marca_id, categoria_id) VALUES (?, ?, ?, ?, ?)",
-                   (nombre, precio, stock, marca_id[0], categoria_id[0]))
+                       (nombre, precio, stock, marca_id[0], categoria_id[0]))
 
         base_datos.commit()
         
         messagebox.showinfo('Completado','El producto ha sido guardado con éxito.')
+
         nombre_producto.delete(0, 'end')
         precio_producto.delete(0, 'end')
         stock_producto.delete(0, 'end')
@@ -104,3 +106,35 @@ def agregar_producto(ventana):
     boton_guardar = Button(ventana_emergente, text='Guardar Producto', command=insertar_producto)
     boton_guardar.grid(row=6, columnspan=2, padx=5, pady=5)
     
+
+def crear_marca(ventana_emergente):
+   
+    ventana_emergente_2 = Toplevel(ventana_emergente)
+    ventana_emergente_2.title('Agregar Marca')
+    ventana_emergente_2.resizable(height=False, width=False)
+
+    titulo_agregar_marca = Label(ventana_emergente_2, text='Agregar Marca', font=45)
+    titulo_agregar_marca.grid(row=0, column=0, padx=5, pady=5, columnspan=2)
+
+    marca_agregar_txt = Label(ventana_emergente_2, text='Marca', font=45)
+    marca_agregar_txt.grid(row=1, column=0)
+
+    marca_agregar = Entry(ventana_emergente_2, font=45)
+    marca_agregar.grid(row=1, column=1, padx=5, pady=5)
+
+    boton_agregar = Button(ventana_emergente_2, text='Agregar Marca', command=lambda:insertar_marca(marca_agregar.get()))
+    boton_agregar.grid(row=2, column=0, columnspan=2, padx=5, pady=5)
+    
+    marca = marca_agregar.get()
+    if marca not in marcas_opciones:
+        cursor.execute("INSERT OR IGNORE INTO marca (nombre) VALUES (?)", (marca,))
+        base_datos.commit()
+        messagebox.showinfo('Completado', 'La marca ha sido guardada con éxito.')
+
+    ventana_emergente_2.destroy()
+
+def obtener_marcas_existentes():
+    cursor.execute("SELECT nombre FROM marca")
+    marcas = cursor.fetchall()
+    return ['Seleccionar Marca'] + [nombre[0] for nombre in marcas]
+

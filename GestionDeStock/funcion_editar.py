@@ -95,13 +95,12 @@ def mostrar_formulario_edicion(tree):
         categoria_producto.grid(row=5, column=1)
 
         def guardar_cambios():
+            
             nombre = nombre_producto.get()
             precio = precio_producto.get()
             stock = stock_producto.get()
-
             marca = marca_seleccionada.get()
             categoria = categoria_seleccionada.get()
-
             base_datos = sqlite3.connect('almacen.bd')
             cursor = base_datos.cursor()
             # Obtiene los IDs de marca y categoría
@@ -113,6 +112,7 @@ def mostrar_formulario_edicion(tree):
             
             cursor.execute("UPDATE producto SET nombre=?, precio=?, stock=?, marca_id=?, categoria_id=? WHERE producto_id=?", (nombre, precio, stock, marca_id, categoria_id, datos[0]))
             base_datos.commit()
+            messagebox.showinfo('Completado','El producto ha sido modificado con éxito.')
 
     boton_guardar = Button(ventana_emergente, text='Guardar Cambios', command=guardar_cambios, font=45)
     boton_guardar.grid(row=6, columnspan=2, padx=5, pady=5)
